@@ -1,24 +1,46 @@
-import { Pagination } from './components/Pagination';
-import { Blogs } from './components/Blogs';
-import { Header } from './components/Header';
 import './App.css';
 import { useContext, useEffect } from 'react';
 import { AppContext } from './context/AppContext';
-
+import { Route, Routes, useLocation, useSearchParams } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { TagPage } from './pages/TagPage';
+import { BlogPage } from './pages/BlogPage';
+import { CategoryPage } from './pages/CategoryPage';
 
 function App() {
   
   const {fetchData} = useContext(AppContext);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+
   useEffect(()=>{
-    fetchData();
-  },[])
+    const page = searchParams.get('page') ?? 1;
+
+    if(location.pathname.includes('tag')){
+      const tag = location.pathname.split('/').at(-1).replaceAll("-"," ");
+      fetchData(Number(page),tag,null);
+    }
+    else if(location.pathname.includes('categories')){
+      const category=location.pathname.split('/').at(-1).replaceAll("-"," ");
+      fetchData(Number(page),null,category)
+    }
+    else{
+      fetchData(Number(page));
+    }
+    console.log("hii")
+    fetchData(page)
+   
+  },[location.pathname, location.search])
 
   
   return (
     <div>
-      <Header></Header>
-      <Blogs></Blogs>
-      <Pagination></Pagination>
+    <Routes>
+      <Route path='/' element={<Home></Home>} />
+      <Route path='/tag/:tag' element={<TagPage></TagPage>} />
+      <Route path='/blog/:blogId' element={<BlogPage></BlogPage>}/>
+      <Route path='/categories/:category' element={<CategoryPage></CategoryPage>}/>
+    </Routes>
     </div>
   );
 }

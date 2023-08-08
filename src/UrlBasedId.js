@@ -1,0 +1,1 @@
+export const urlBasedId = "https://codehelp-apis.vercel.app/api/get-blog"
