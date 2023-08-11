@@ -27,7 +27,6 @@ function App() {
     else{
       fetchData(Number(page));
     }
-    console.log("hii")
     fetchData(page)
    
   },[location.pathname, location.search])
